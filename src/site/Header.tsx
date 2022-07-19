@@ -1,5 +1,11 @@
-export const Header = () => {
+type HeaderType = {
+    headerTitle: string
+}
+
+export const Header = (props: HeaderType) => {
+
+    console.log(props)
     return (
-        <div>Header</div>
+        <div>{props.headerTitle}</div>
     )
 }
