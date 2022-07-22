@@ -12,8 +12,6 @@ export const Button = (props: ButtonType) => {
         props.callBack();
     }
 
-    console.log('props', props)
-
     return (
         <div>
             <button onClick={onClickHandler}>{props.name}</button>
