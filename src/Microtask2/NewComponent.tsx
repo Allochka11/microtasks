@@ -20,7 +20,7 @@ export const NewComponent = (props: NewComponentType) => {
     return (
         <table>
             <tbody>
-            {topCars.map((el, id,arr) => {
+            {topCars.map((el, id, arr) => {
                 return (
                     <tr key={id}>
                         <th>{++id}</th>
