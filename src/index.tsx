@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import {App} from './Microtask5/App';
+import {App} from './Mikrotask6_Input/App';
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
