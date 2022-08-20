@@ -1,43 +1,104 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
-import {Header} from "./site/Header";
-import {Body} from "./site/Body";
-import {Footer} from "./site/Footer";
-import {NewComponent} from "./Microtask2/NewComponent";
-import {Button} from './components/Button';
+import {Todolist} from './Todolist';
+import {v1} from 'uuid';
+
+export type FilterValuesType = "all" | "active" | "completed";
+type todolistsType = {
+    id: string
+    title: string
+    filter: FilterValuesType
+}
 
 function App() {
-    /* let students = [
-         {id: 1, name: 'Alla', age: 30},
-         {id: 2, name: 'Vladymyr', age: 31},
-         {id: 3, name: 'Petya', age: 19},
-         {id: 4, name: 'Anton', age: 37}
-     ]*/
-    const Button1Foo = (subscriber: string, age: number, city: string) => {
-        console.log(subscriber, age, city);
+
+    // let [tasks, setTasks] = useState([
+    //     {id: v1(), title: "HTML&CSS", isDone: true},
+    //     {id: v1(), title: "JS", isDone: true},
+    //     {id: v1(), title: "ReactJS", isDone: false},
+    //     {id: v1(), title: "Rest API", isDone: false},
+    //     {id: v1(), title: "GraphQL", isDone: false},
+    // ]);
+    // let [filter, setFilter] = useState<FilterValuesType>("all");
+
+    let todolistID1 = v1();
+    let todolistID2 = v1();
+
+    let [todolists, setTodolists] = useState<Array<todolistsType>>([
+        {id: todolistID1, title: 'What to learn', filter: 'all'},
+        {id: todolistID2, title: 'What to buy', filter: 'all'},
+    ])
+
+    let [tasks, setTasks] = useState({
+        [todolistID1]: [
+            {id: v1(), title: "HTML&CSS", isDone: true},
+            {id: v1(), title: "JS", isDone: true},
+            {id: v1(), title: "ReactJS", isDone: false},
+            {id: v1(), title: "Rest API", isDone: false},
+            {id: v1(), title: "GraphQL", isDone: false},
+        ],
+        [todolistID2]: [
+            {id: v1(), title: "HTML&CSS2", isDone: true},
+            {id: v1(), title: "JS2", isDone: true},
+            {id: v1(), title: "ReactJS2", isDone: false},
+            {id: v1(), title: "Rest API2", isDone: false},
+            {id: v1(), title: "GraphQL2", isDone: false},
+        ]
+    });
+
+
+    function removeTask(todolistId: string, id: string) {
+        setTasks({...tasks, [todolistId]: tasks[todolistId].filter(t => t.id !== id)})
     }
-    const Button2Foo = (subscriber: string) => {
-        console.log(subscriber);
+
+    function addTask(todolistId: string, title: string) {
+        let newTask = {id: v1(), title: title, isDone: false};
+        setTasks({...tasks, [todolistId]: [newTask, ...tasks[todolistId]]})
     }
-    const Button3Foo = () => {
-        console.log('Nothing =)');
+
+    function changeStatus(todolistId: string, taskId: string, isDone: boolean) {
+        setTasks({
+            ...tasks,
+            [todolistId]: tasks[todolistId].map(t => t.id === taskId ? {...t, isDone: isDone} : t)
+        })
+
     }
+
+
+    function changeFilter(todolistId: string, value: FilterValuesType) {
+        setTodolists(todolists.map(todolist => todolist.id === todolistId ? {...todolist, filter: value} : todolist))
+    }
+
 
     return (
-        <>
-            {/*microtask1
-            <Header headerTitle={"New Header Title"}/>
-            <Body bodyTitle={"New Body Title"}/>
-            <Footer footerTitle={"New Footer Title"}/>*/}
+        <div className="App">
+            {todolists.map(mapTodoLists => {
+                let tasksForTodolist = tasks[mapTodoLists.id];
 
-            {/*microtask2
-            <NewComponent students={students}/>*/}
+                if (mapTodoLists.filter === "active") {
+                    tasksForTodolist = tasks[mapTodoLists.id].filter(t => t.isDone === false);
+                }
+                if (mapTodoLists.filter === "completed") {
+                    tasksForTodolist = tasks[mapTodoLists.id].filter(t => t.isDone === true);
+                }
 
-            {/*microtask3*/}
-            <Button name={'MyYouTubeChannel-1'} callBack={() => Button1Foo('I am Alla', 26, 'Kyiv')}/>
-            <Button name={'MyYouTubeChannel-2'} callBack={() => Button2Foo('I am Vasya')}/>
-            <Button name={'I am stupid button'} callBack={Button3Foo}/>
-        </>
+                console.log(mapTodoLists.id)
+                return (
+                    <Todolist
+                        key={mapTodoLists.id}
+                        todolistId={mapTodoLists.id}
+                        title={mapTodoLists.title}
+                        tasks={tasksForTodolist}
+                        removeTask={removeTask}
+                        changeFilter={changeFilter}
+                        addTask={addTask}
+                        changeTaskStatus={changeStatus}
+                        filter={mapTodoLists.filter}
+                    />
+                )
+            })}
+
+        </div>
     );
 }
 
